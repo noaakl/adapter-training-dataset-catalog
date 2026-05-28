@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Granite Switch — Dataset Catalog</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    background: #f8f9fa;
+    color: #1a1a1a;
+    padding: 24px;
+  }
+
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .controls label { font-size: 12px; font-weight: 600; color: #555; margin-right: 4px; }
+
+  select, input[type=text] {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .toggle-group {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .toggle-group button {
+    border: none;
+    background: #fff;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #555;
+    border-right: 1px solid #ddd;
+  }
+
+  .toggle-group button:last-child { border-right: none; }
+  .toggle-group button.active { background: #1a1a1a; color: #fff; }
+
+  .count { margin-left: auto; font-size: 12px; color: #888; align-self: center; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  thead th {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  thead th:hover { background: #333; }
+  thead th.sorted-asc::after { content: " ↑"; }
+  thead th.sorted-desc::after { content: " ↓"; }
+
+  tbody tr { border-bottom: 1px solid #f0f0f0; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+
+  td { padding: 10px 12px; vertical-align: top; }
+
+  .tier {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+  }
+
+  .tier-1 { background: #d1fae5; color: #065f46; }
+  .tier-2 { background: #fef9c3; color: #854d0e; }
+  .tier-3 { background: #fee2e2; color: #991b1b; }
+
+  .domain-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .domain-sql    { background: #dbeafe; color: #1e40af; }
+  .domain-vuln   { background: #fce7f3; color: #9d174d; }
+  .domain-agentic { background: #ede9fe; color: #5b21b6; }
+
+  .usage-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .usage-training { background: #d1fae5; color: #065f46; }
+  .usage-eval     { background: #fee2e2; color: #991b1b; }
+  .usage-both     { background: #e0f2fe; color: #0369a1; }
+
+  .rank-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    font-size: 12px;
+    font-weight: 700;
+    color: #374151;
+  }
+
+  .name-cell { min-width: 180px; }
+  .name-link { font-weight: 600; color: #1a1a1a; text-decoration: none; }
+  .name-link:hover { color: #2563eb; }
+  .hf-link { font-size: 11px; color: #6b7280; text-decoration: none; display: block; margin-top: 2px; }
+  .hf-link:hover { color: #2563eb; }
+
+  .notes-cell { max-width: 300px; font-size: 12px; color: #444; line-height: 1.4; }
+  .reason-cell { max-width: 220px; font-size: 12px; color: #555; line-height: 1.4; font-style: italic; }
+
+  .baseline-cell { max-width: 180px; font-size: 12px; }
+
+  .domain-section {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    background: #f3f4f6 !important;
+    color: #6b7280;
+    padding: 6px 12px;
+  }
+
+  .no-results { text-align: center; padding: 40px; color: #999; font-size: 14px; }
+
+  @media (max-width: 900px) {
+    .notes-cell, .reason-cell { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Granite Switch — Dataset Catalog</h1>
+<p class="subtitle">HuggingFace datasets from the deep research survey · Ranked by training value, baseline difficulty, existing LoRA artifacts, and composability</p>
+
+<div class="controls">
+  <div>
+    <label>Domain</label>
+    <select id="filterDomain">
+      <option value="">All domains</option>
+      <option value="NL→SQL">NL→SQL</option>
+      <option value="Vulnerability">Vulnerability</option>
+      <option value="Agentic">Agentic</option>
+    </select>
+  </div>
+  <div>
+    <label>Usage</label>
+    <div class="toggle-group">
+      <button class="active" data-usage="">All</button>
+      <button data-usage="training">Training</button>
+      <button data-usage="eval">Eval only</button>
+      <button data-usage="both">Both</button>
+    </div>
+  </div>
+  <div>
+    <label>Tier</label>
+    <select id="filterTier">
+      <option value="">All tiers</option>
+      <option value="1">Tier 1 — Start here</option>
+      <option value="2">Tier 2 — Second wave</option>
+    </select>
+  </div>
+  <span class="count" id="countLabel"></span>
+</div>
+
+<table id="catalogTable">
+  <thead>
+    <tr>
+      <th data-col="rank">#</th>
+      <th data-col="tier">Tier</th>
+      <th data-col="name">Dataset</th>
+      <th data-col="domain">Domain</th>
+      <th data-col="usage">Usage</th>
+      <th data-col="size">Size</th>
+      <th data-col="bestBaseline">Best Baseline</th>
+      <th data-col="loraArtifacts">LoRA Artifacts</th>
+      <th data-col="license">License</th>
+      <th class="reason-cell" data-col="rankReason">Why this rank</th>
+      <th class="notes-cell" data-col="notes">Notes</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script src="data.js"></script>
+<script>
+  let sortCol = null;
+  let sortDir = 1;
+  let activeUsage = "";
+
+  const domainClass = { "NL→SQL": "domain-sql", "Vulnerability": "domain-vuln", "Agentic": "domain-agentic" };
+  const usageClass  = { training: "usage-training", eval: "usage-eval", both: "usage-both" };
+
+  function domainOrder(d) { return { "NL→SQL": 0, "Vulnerability": 1, "Agentic": 2 }[d] ?? 99; }
+
+  function filtered() {
+    const domain = document.getElementById("filterDomain").value;
+    const tier   = document.getElementById("filterTier").value;
+    return CATALOG.filter(d =>
+      (!domain || d.domain === domain) &&
+      (!activeUsage || d.usage === activeUsage || (activeUsage === "eval" && d.usage === "eval")) &&
+      (!tier || String(d.tier) === tier)
+    );
+  }
+
+  function sorted(rows) {
+    if (!sortCol) return [...rows].sort((a, b) => domainOrder(a.domain) - domainOrder(b.domain) || a.rank - b.rank);
+    return [...rows].sort((a, b) => {
+      let av = a[sortCol] ?? "", bv = b[sortCol] ?? "";
+      if (typeof av === "number") return sortDir * (av - bv);
+      return sortDir * String(av).localeCompare(String(bv));
+    });
+  }
+
+  function render() {
+    const rows = sorted(filtered());
+    const tbody = document.getElementById("tableBody");
+    document.getElementById("countLabel").textContent = rows.length + " dataset" + (rows.length !== 1 ? "s" : "");
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="11" class="no-results">No datasets match the current filters.</td></tr>';
+      return;
+    }
+
+    let html = "";
+    let lastDomain = null;
+    const showingSingleDomain = document.getElementById("filterDomain").value !== "";
+
+    rows.forEach(d => {
+      if (!showingSingleDomain && d.domain !== lastDomain) {
+        lastDomain = d.domain;
+        html += `<tr><td colspan="11" class="domain-section">${d.domain}</td></tr>`;
+      }
+      const hfUrl = `https://huggingface.co/datasets/${d.hf}`;
+      html += `<tr>
+        <td><span class="rank-num">${d.rank}</span></td>
+        <td><span class="tier tier-${d.tier}">T${d.tier}</span></td>
+        <td class="name-cell">
+          <a class="name-link" href="${hfUrl}" target="_blank">${d.name}</a>
+          <a class="hf-link" href="${hfUrl}" target="_blank">🤗 ${d.hf}</a>
+        </td>
+        <td><span class="domain-badge ${domainClass[d.domain]}">${d.domain}</span><br><span style="font-size:11px;color:#888">${d.subdomain}</span></td>
+        <td><span class="usage-badge ${usageClass[d.usage]}">${d.usage}</span></td>
+        <td style="font-size:12px;max-width:160px">${d.size}</td>
+        <td class="baseline-cell">${d.bestBaseline}</td>
+        <td style="font-size:12px;max-width:160px">${d.loraArtifacts}</td>
+        <td style="font-size:12px;white-space:nowrap">${d.license}</td>
+        <td class="reason-cell">${d.rankReason}</td>
+        <td class="notes-cell">${d.notes}</td>
+      </tr>`;
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  // Filters
+  document.getElementById("filterDomain").addEventListener("change", render);
+  document.getElementById("filterTier").addEventListener("change", render);
+
+  document.querySelectorAll(".toggle-group button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".toggle-group button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeUsage = btn.dataset.usage;
+      render();
+    });
+  });
+
+  // Sort
+  document.querySelectorAll("thead th[data-col]").forEach(th => {
+    th.addEventListener("click", () => {
+      const col = th.dataset.col;
+      if (sortCol === col) {
+        sortDir *= -1;
+        th.className = sortDir === 1 ? "sorted-asc" : "sorted-desc";
+      } else {
+        document.querySelectorAll("thead th").forEach(t => t.className = "");
+        sortCol = col;
+        sortDir = 1;
+        th.className = "sorted-asc";
+      }
+      render();
+    });
+  });
+
+  render();
+</script>
+</body>
+</html>
