@@ -1,5 +1,11 @@
 // Dataset catalog — HuggingFace datasets from the deep research artifact only
 // Ranking criteria: training volume, baseline difficulty, existing LoRA artifacts, composability, license
+//
+// Task categories — what the model learns to do:
+//   Generation        — produce structured/free-form output (SQL, code, patches, API calls)
+//   Reasoning         — multi-step logic, schema/code understanding, chain-of-thought
+//   Understanding     — interpret and classify input (binary detection, intent classification)
+//   Knowledge         — recall domain-specific facts (API specs, MITRE techniques, DB schemas)
 window.CATALOG = [
 
   // ── NL→SQL ─────────────────────────────────────────────────────────────────
@@ -18,6 +24,8 @@ window.CATALOG = [
     tier: 1,
     rank: 1,
     rankReason: "Largest clean training corpus; Apache 2.0; instruction-tuning ready",
+    taskCategories: ["Generation"],
+    taskNote: "Pure SQL generation from NL + schema. Synthetic — no complex reasoning required; strong signal for output format and syntax.",
     notes: "Best pure training corpus for SQL generation. Synthetic but high variety. No competitive benchmark — use for fine-tuning, evaluate on Spider/BIRD.",
     composability: "High — pairs with Spider/BIRD eval"
   },
@@ -35,6 +43,8 @@ window.CATALOG = [
     tier: 1,
     rank: 2,
     rankReason: "Gold-standard benchmark; most published LoRAs; clear baseline to beat",
+    taskCategories: ["Generation", "Reasoning"],
+    taskNote: "Cross-domain SQL requires schema reasoning (joining tables, understanding relationships) and structured output generation.",
     notes: "Cross-domain text-to-SQL gold standard. Best baseline is CodeS-7B (85.4% EX). Chains naturally with NL2SQL-BUGs for error detection.",
     composability: "Excellent — chains with error detection adapter"
   },
@@ -52,6 +62,8 @@ window.CATALOG = [
     tier: 1,
     rank: 3,
     rankReason: "Hardest real-world SQL benchmark; largest DB size; strong research signal",
+    taskCategories: ["Generation", "Reasoning", "Knowledge"],
+    taskNote: "Real-world DBs require domain knowledge (e.g. medical, finance schemas), multi-hop reasoning, and precise SQL generation.",
     notes: "Best real-world difficulty. Caution: 22 wrong gold queries; BIRD EX has ~32% annotation noise (FLEX, NAACL 2025). Always report with caveats.",
     composability: "Best real-world stress test"
   },
@@ -69,6 +81,8 @@ window.CATALOG = [
     tier: 2,
     rank: 4,
     rankReason: "Saturated benchmark — most models >87% EX; useful only for warm-up",
+    taskCategories: ["Generation"],
+    taskNote: "Single-table, simple SQL — mostly pattern matching. Minimal reasoning required. Teaches output format, not schema understanding.",
     notes: "Single-table, simple SQL. Almost every model exceeds 87% EX — diminishing returns for benchmarking. Use only as warm-up / training augmentation.",
     composability: "Low — single-table, not representative of real workloads"
   },
@@ -89,6 +103,8 @@ window.CATALOG = [
     tier: 1,
     rank: 1,
     rankReason: "Most LoRA artifacts; known baselines; CWE labels; best training corpus",
+    taskCategories: ["Understanding", "Reasoning"],
+    taskNote: "Model must understand C/C++ code semantics and reason about vulnerability patterns — beyond surface syntax.",
     notes: "Best training corpus for vuln detection. High F1 on BigVul itself (0.91) collapses to ~3% on PrimeVul — always pair BigVul training with PrimeVul eval to test real generalization.",
     composability: "Excellent — detection→CWE classification→fix chain"
   },
@@ -106,6 +122,8 @@ window.CATALOG = [
     tier: 1,
     rank: 2,
     rankReason: "MIT license; published checkpoint; clean binary detection",
+    taskCategories: ["Understanding"],
+    taskNote: "Binary classification of C functions. Teaches the model to distinguish vulnerable from benign code patterns.",
     notes: "Clean binary detection dataset. MIT license makes it safe for publication. Limited to C/C++ (FFmpeg + QEMU). Use as complement to BigVul.",
     composability: "Good binary detection stage"
   },
@@ -123,6 +141,8 @@ window.CATALOG = [
     tier: 1,
     rank: 3,
     rankReason: "Highest quality eval; deduplicated; chronological split; MIT license",
+    taskCategories: ["Understanding", "Reasoning"],
+    taskNote: "Hardest detection task — deduplicated, chronological. Requires deep code reasoning beyond memorized patterns.",
     notes: "The hardest and most realistic vuln detection benchmark. Train on BigVul, eval here. Low F1 ceiling (~17.8% for 7B models) means strong improvement signal.",
     composability: "Highest realism — use as held-out eval"
   },
@@ -140,6 +160,8 @@ window.CATALOG = [
     tier: 2,
     rank: 4,
     rankReason: "Clean license; multi-language; low baseline = room to improve; patch generation stage",
+    taskCategories: ["Generation", "Reasoning"],
+    taskNote: "Model must understand a vulnerable code snippet and generate a corrected version — requires both code reasoning and generation.",
     notes: "Best multi-language patch generation dataset. Very low F1 baseline (12.8) means large improvement headroom. Clean license (CC BY 4.0 + MIT).",
     composability: "Detection→patch generation chain"
   },
@@ -157,6 +179,8 @@ window.CATALOG = [
     tier: 2,
     rank: 5,
     rankReason: "Multi-language augmentation; use to supplement BigVul",
+    taskCategories: ["Understanding"],
+    taskNote: "Multi-language binary detection. Teaches language-agnostic vulnerability patterns (C, Python, Java, etc.).",
     notes: "Multi-language supplement to BigVul. No standalone benchmark — use as data augmentation only.",
     composability: "Augmentation layer"
   },
@@ -174,6 +198,8 @@ window.CATALOG = [
     tier: 2,
     rank: 6,
     rankReason: "Tests realistic class imbalance; supplement use",
+    taskCategories: ["Understanding"],
+    taskNote: "Binary detection under realistic class imbalance (~9:1). Tests whether the model has learned vulnerability understanding vs. majority-class bias.",
     notes: "Tests robustness to real-world class imbalance (~9:1 benign). Use to validate that the adapter doesn't overfit to balanced training data.",
     composability: "Imbalance robustness test"
   },
@@ -194,6 +220,8 @@ window.CATALOG = [
     tier: 1,
     rank: 1,
     rankReason: "Official training corpus for SOTA BFCL results; proven LoRA recipe; 3,673 verified APIs",
+    taskCategories: ["Generation", "Knowledge"],
+    taskNote: "Model must know API signatures (Knowledge) and generate correctly structured function calls with right parameters (Generation).",
     notes: "Primary training corpus for function calling adapters. The xLAM-*-fc-r models are trained on this and hold top BFCL positions. Official QLoRA recipe available.",
     composability: "Primary training data — foundation for function-calling adapter"
   },
@@ -211,6 +239,8 @@ window.CATALOG = [
     tier: 1,
     rank: 2,
     rankReason: "96+ downstream LoRAs; CC BY-SA; most widely used FC training corpus",
+    taskCategories: ["Generation", "Reasoning"],
+    taskNote: "Multi-turn conversations require tracking context across turns (Reasoning) and generating correct function calls (Generation).",
     notes: "Most widely reused function-calling training dataset. 96+ LoRA models trace their training lineage here. CC BY-SA license is clean for publication.",
     composability: "Solid warm-up / augmentation layer"
   },
@@ -228,6 +258,8 @@ window.CATALOG = [
     tier: 1,
     rank: 3,
     rankReason: "Best aggregator: integrates xLAM-60k + When2Call + glaive + ToolACE + APIGen-MT; largest volume",
+    taskCategories: ["Generation", "Reasoning", "Knowledge"],
+    taskNote: "Broadest agentic coverage — model learns API knowledge, multi-step tool planning, and output generation across 7 source datasets.",
     notes: "Best single training corpus when you want breadth. Aggregates 7 source datasets. +14.22% τ-bench improvement reported with Qwen3-14B.",
     composability: "Best aggregator dataset"
   },
@@ -245,6 +277,8 @@ window.CATALOG = [
     tier: 1,
     rank: 4,
     rankReason: "No published LoRA = win opportunity; cleanest intent-classification contract; DPO data included",
+    taskCategories: ["Understanding", "Reasoning"],
+    taskNote: "Model must understand the user's intent and reason about whether tool use is appropriate — a meta-level capability distinct from knowing how to call tools.",
     notes: "Cleanest when-not-to-call-tools dataset. No published LoRA adapter exists — first mover advantage. DPO data makes it suitable for preference alignment.",
     composability: "Tool-use intent classification stage (pipeline gating)"
   },
@@ -262,6 +296,8 @@ window.CATALOG = [
     tier: 2,
     rank: 5,
     rankReason: "Strong BFCL results; training data; partially public",
+    taskCategories: ["Generation", "Knowledge"],
+    taskNote: "Diverse API pool (26.5k) teaches API knowledge breadth; output is structured function calls.",
     notes: "Strong training data behind top BFCL results. ToolACE-8B holds 89.17% on BFCL-v1. Partially public on HF.",
     composability: "Excellent augmentation for function calling"
   },
@@ -279,6 +315,8 @@ window.CATALOG = [
     tier: 2,
     rank: 6,
     rankReason: "Crucial for multi-turn; small but high quality; underpins xLAM-2 τ-bench SOTA",
+    taskCategories: ["Reasoning", "Generation"],
+    taskNote: "Multi-turn trajectories require planning across steps (Reasoning) and generating correct calls at each step (Generation). Key for reliability.",
     notes: "Small (5k) but the training data behind xLAM-2 τ-bench results that beat GPT-4o. Essential for multi-turn reliability.",
     composability: "Multi-turn agent interaction stage"
   },
@@ -296,6 +334,8 @@ window.CATALOG = [
     tier: 1,
     rank: 7,
     rankReason: "Primary eval benchmark; Apache 2.0; fast-moving leaderboard",
+    taskCategories: ["Generation", "Knowledge"],
+    taskNote: "Eval-only. Tests API knowledge recall and structured output generation across AST + execution + relevance dimensions.",
     notes: "The consensus function-calling eval benchmark. Do not train on this. Leaderboard moves fast — re-pull numbers on the day of submission.",
     composability: "Primary eval anchor"
   }
