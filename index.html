@@ -59,6 +59,88 @@
 
   .count { margin-left: auto; font-size: 12px; color: #888; align-self: center; }
 
+  /* Pipeline flow diagram */
+  .pipeline-diagram {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .pipeline-domain-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-right: 16px;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  .pipeline-stages { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; }
+
+  .pipeline-stage-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: border-color .15s, background .15s;
+    min-width: 110px;
+  }
+
+  .pipeline-stage-box:hover { background: #f3f4f6; }
+  .pipeline-stage-box.active-stage { border-color: #1a1a1a; background: #f3f4f6; }
+
+  .pipeline-stage-num {
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .pipeline-stage-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .pipeline-stage-count {
+    font-size: 10px;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  .pipeline-arrow {
+    font-size: 16px;
+    color: #d1d5db;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .pipeline-gap-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 2px dashed #e5e7eb;
+    min-width: 110px;
+    opacity: .6;
+  }
+
+  .pipeline-gap-box .pipeline-stage-name { color: #9ca3af; }
+  .pipeline-gap-label { font-size: 10px; color: #d1d5db; margin-top: 2px; font-style: italic; }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -112,8 +194,8 @@
     font-weight: 600;
   }
 
-  .domain-sql    { background: #dbeafe; color: #1e40af; }
-  .domain-vuln   { background: #fce7f3; color: #9d174d; }
+  .domain-sql     { background: #dbeafe; color: #1e40af; }
+  .domain-vuln    { background: #fce7f3; color: #9d174d; }
   .domain-agentic { background: #ede9fe; color: #5b21b6; }
 
   .usage-badge {
@@ -127,6 +209,50 @@
   .usage-training { background: #d1fae5; color: #065f46; }
   .usage-eval     { background: #fee2e2; color: #991b1b; }
   .usage-both     { background: #e0f2fe; color: #0369a1; }
+
+  /* Pipeline stage badges */
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .stage-1 { background: #fef3c7; color: #92400e; }
+  .stage-2 { background: #dbeafe; color: #1e40af; }
+  .stage-3 { background: #d1fae5; color: #065f46; }
+  .stage-4 { background: #ede9fe; color: #5b21b6; }
+
+  /* Context relevancy badges */
+  .relevancy-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .relevancy-High   { background: #dcfce7; color: #166534; }
+  .relevancy-Medium { background: #fef9c3; color: #854d0e; }
+  .relevancy-Low    { background: #f3f4f6; color: #6b7280; }
+
+  /* Task category badges */
+  .task-badges { display: flex; flex-wrap: wrap; gap: 3px; }
+  .task-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .task-generation    { background: #dcfce7; color: #166534; }
+  .task-reasoning     { background: #fef3c7; color: #92400e; }
+  .task-understanding { background: #e0f2fe; color: #075985; }
+  .task-knowledge     { background: #f3e8ff; color: #6b21a8; }
+  .task-note { font-size: 11px; color: #6b7280; margin-top: 4px; line-height: 1.35; font-style: italic; }
 
   .rank-num {
     display: inline-flex;
@@ -146,10 +272,11 @@
   .hf-link { font-size: 11px; color: #6b7280; text-decoration: none; display: block; margin-top: 2px; }
   .hf-link:hover { color: #2563eb; }
 
-  .notes-cell { max-width: 300px; font-size: 12px; color: #444; line-height: 1.4; }
-  .reason-cell { max-width: 220px; font-size: 12px; color: #555; line-height: 1.4; font-style: italic; }
-
-  .baseline-cell { max-width: 180px; font-size: 12px; }
+  .notes-cell { max-width: 280px; font-size: 12px; color: #444; line-height: 1.4; }
+  .reason-cell { max-width: 200px; font-size: 12px; color: #555; line-height: 1.4; font-style: italic; }
+  .baseline-cell { max-width: 160px; font-size: 12px; }
+  .relevancy-cell { max-width: 140px; }
+  .relevancy-note { font-size: 11px; color: #6b7280; margin-top: 3px; line-height: 1.35; font-style: italic; }
 
   .domain-section {
     font-weight: 700;
@@ -163,31 +290,21 @@
 
   .no-results { text-align: center; padding: 40px; color: #999; font-size: 14px; }
 
-  .task-badges { display: flex; flex-wrap: wrap; gap: 3px; }
-  .task-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .task-generation  { background: #dcfce7; color: #166534; }
-  .task-reasoning   { background: #fef3c7; color: #92400e; }
-  .task-understanding { background: #e0f2fe; color: #075985; }
-  .task-knowledge   { background: #f3e8ff; color: #6b21a8; }
+  .ctx-tokens { font-size: 12px; color: #374151; white-space: nowrap; }
 
-  .task-note { font-size: 11px; color: #6b7280; margin-top: 4px; line-height: 1.35; font-style: italic; }
+  #pipelineSection { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
 
   @media (max-width: 900px) {
-    .notes-cell, .reason-cell { display: none; }
+    .notes-cell, .reason-cell, .relevancy-note { display: none; }
   }
 </style>
 </head>
 <body>
 
 <h1>Granite Switch — Dataset Catalog</h1>
-<p class="subtitle">HuggingFace datasets from the deep research survey · Ranked by training value, baseline difficulty, existing LoRA artifacts, and composability</p>
+<p class="subtitle">HuggingFace datasets ranked by training value, baseline difficulty, existing LoRA artifacts, and pipeline coverage</p>
+
+<div id="pipelineSection"></div>
 
 <div class="controls">
   <div>
@@ -226,6 +343,16 @@
       <option value="Knowledge">Knowledge</option>
     </select>
   </div>
+  <div>
+    <label>Stage</label>
+    <select id="filterStage">
+      <option value="">All stages</option>
+      <option value="1">Stage 1</option>
+      <option value="2">Stage 2</option>
+      <option value="3">Stage 3</option>
+      <option value="4">Stage 4</option>
+    </select>
+  </div>
   <span class="count" id="countLabel"></span>
 </div>
 
@@ -236,8 +363,11 @@
       <th data-col="tier">Tier</th>
       <th data-col="name">Dataset</th>
       <th data-col="domain">Domain</th>
+      <th data-col="pipelineStage">Stage</th>
       <th data-col="usage">Usage</th>
       <th data-col="taskCategories">Task Categories</th>
+      <th data-col="avgContextTokens">Avg Context</th>
+      <th data-col="contextRelevancy">Context Relevancy</th>
       <th data-col="size">Size</th>
       <th data-col="bestBaseline">Best Baseline</th>
       <th data-col="loraArtifacts">LoRA Artifacts</th>
@@ -254,9 +384,35 @@
   let sortCol = null;
   let sortDir = 1;
   let activeUsage = "";
+  let activeStageFilter = "";  // from dropdown
+  let activeDiagramStage = ""; // from pipeline diagram click (domain:stage)
 
   const domainClass = { "NL→SQL": "domain-sql", "Vulnerability": "domain-vuln", "Agentic": "domain-agentic" };
   const usageClass  = { training: "usage-training", eval: "usage-eval", both: "usage-both" };
+  const taskClass   = { Generation: "task-generation", Reasoning: "task-reasoning", Understanding: "task-understanding", Knowledge: "task-knowledge" };
+  const stageNums   = ["①","②","③","④"];
+
+  // Pipeline stage definitions per domain (including known gaps)
+  const PIPELINE_DEFS = {
+    "NL→SQL": [
+      { stage: 1, label: "Triage" },
+      { stage: 2, label: "Generation" },
+      { stage: 3, label: "SQL Repair" },
+      { stage: 4, label: "Robustness Eval" }
+    ],
+    "Vulnerability": [
+      { stage: 1, label: "Detection" },
+      { stage: 2, label: "CWE Classification", gap: true },
+      { stage: 3, label: "Patch Generation" },
+      { stage: 4, label: "TTP Mapping", gap: true }
+    ],
+    "Agentic": [
+      { stage: 1, label: "Intent Classification" },
+      { stage: 2, label: "Function Calling" },
+      { stage: 3, label: "Multi-turn Planning" },
+      { stage: 4, label: "Trajectory" }
+    ]
+  };
 
   function domainOrder(d) { return { "NL→SQL": 0, "Vulnerability": 1, "Agentic": 2 }[d] ?? 99; }
 
@@ -264,12 +420,24 @@
     const domain = document.getElementById("filterDomain").value;
     const tier   = document.getElementById("filterTier").value;
     const task   = document.getElementById("filterTask").value;
-    return CATALOG.filter(d =>
-      (!domain || d.domain === domain) &&
-      (!activeUsage || d.usage === activeUsage || (activeUsage === "eval" && d.usage === "eval")) &&
-      (!tier || String(d.tier) === tier) &&
-      (!task || (d.taskCategories && d.taskCategories.includes(task)))
-    );
+    const stage  = activeStageFilter || document.getElementById("filterStage").value;
+
+    return CATALOG.filter(d => {
+      if (domain && d.domain !== domain) return false;
+      if (activeUsage && d.usage !== activeUsage) return false;
+      if (tier && String(d.tier) !== tier) return false;
+      if (task && !(d.taskCategories && d.taskCategories.includes(task))) return false;
+      if (stage) {
+        // activeDiagramStage is "domain:stageNum"
+        if (activeDiagramStage) {
+          const [dDomain, dStage] = activeDiagramStage.split(":");
+          if (d.domain !== dDomain || String(d.pipelineStage) !== dStage) return false;
+        } else {
+          if (String(d.pipelineStage) !== stage) return false;
+        }
+      }
+      return true;
+    });
   }
 
   function sorted(rows) {
@@ -281,17 +449,98 @@
     });
   }
 
+  function fmtTokens(n) {
+    if (!n) return "—";
+    if (n >= 1000) return "~" + (n / 1000).toFixed(1) + "K";
+    return "~" + n;
+  }
+
+  function buildPipelineDiagrams() {
+    const section = document.getElementById("pipelineSection");
+    const activeDomain = document.getElementById("filterDomain").value;
+    const domains = activeDomain ? [activeDomain] : ["NL→SQL", "Vulnerability", "Agentic"];
+    section.innerHTML = "";
+
+    domains.forEach(domain => {
+      const defs = PIPELINE_DEFS[domain];
+      if (!defs) return;
+
+      // Count real datasets per stage in this domain
+      const stageCounts = {};
+      CATALOG.filter(d => d.domain === domain).forEach(d => {
+        stageCounts[d.pipelineStage] = (stageCounts[d.pipelineStage] || 0) + 1;
+      });
+
+      const diag = document.createElement("div");
+      diag.className = "pipeline-diagram";
+
+      const domainLabel = document.createElement("div");
+      domainLabel.className = "pipeline-diagram-label pipeline-domain-label";
+      domainLabel.textContent = domain;
+      diag.appendChild(domainLabel);
+
+      const stagesEl = document.createElement("div");
+      stagesEl.className = "pipeline-stages";
+
+      defs.forEach((def, i) => {
+        if (i > 0) {
+          const arrow = document.createElement("span");
+          arrow.className = "pipeline-arrow";
+          arrow.textContent = "→";
+          stagesEl.appendChild(arrow);
+        }
+
+        const key = domain + ":" + def.stage;
+        const count = stageCounts[def.stage] || 0;
+
+        if (def.gap || count === 0) {
+          const box = document.createElement("div");
+          box.className = "pipeline-gap-box";
+          box.innerHTML = `<span class="pipeline-stage-num">${stageNums[i]}</span>
+            <span class="pipeline-stage-name" style="color:#9ca3af">${def.label}</span>
+            <span class="pipeline-gap-label">no dataset</span>`;
+          stagesEl.appendChild(box);
+        } else {
+          const box = document.createElement("div");
+          box.className = "pipeline-stage-box" + (activeDiagramStage === key ? " active-stage" : "");
+          box.dataset.key = key;
+          box.dataset.domain = domain;
+          box.dataset.stage = def.stage;
+          box.innerHTML = `<span class="pipeline-stage-num">${stageNums[i]}</span>
+            <span class="pipeline-stage-name">${def.label}</span>
+            <span class="pipeline-stage-count">${count} dataset${count !== 1 ? "s" : ""}</span>`;
+          box.addEventListener("click", () => {
+            if (activeDiagramStage === key) {
+              activeDiagramStage = "";
+              activeStageFilter = "";
+            } else {
+              activeDiagramStage = key;
+              activeStageFilter = String(def.stage);
+              // also sync domain filter
+              document.getElementById("filterDomain").value = domain;
+              document.getElementById("filterStage").value = "";
+            }
+            buildPipelineDiagrams();
+            render();
+          });
+          stagesEl.appendChild(box);
+        }
+      });
+
+      diag.appendChild(stagesEl);
+      section.appendChild(diag);
+    });
+  }
+
   function render() {
     const rows = sorted(filtered());
     const tbody = document.getElementById("tableBody");
     document.getElementById("countLabel").textContent = rows.length + " dataset" + (rows.length !== 1 ? "s" : "");
 
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="12" class="no-results">No datasets match the current filters.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="15" class="no-results">No datasets match the current filters.</td></tr>';
       return;
     }
-
-    const taskClass = { Generation: "task-generation", Reasoning: "task-reasoning", Understanding: "task-understanding", Knowledge: "task-knowledge" };
 
     let html = "";
     let lastDomain = null;
@@ -300,12 +549,18 @@
     rows.forEach(d => {
       if (!showingSingleDomain && d.domain !== lastDomain) {
         lastDomain = d.domain;
-        html += `<tr><td colspan="12" class="domain-section">${d.domain}</td></tr>`;
+        html += `<tr><td colspan="15" class="domain-section">${d.domain}</td></tr>`;
       }
       const hfUrl = `https://huggingface.co/datasets/${d.hf}`;
       const taskBadges = (d.taskCategories || [])
-        .map(t => `<span class="task-badge ${taskClass[t] || ''}">${t}</span>`)
-        .join("");
+        .map(t => `<span class="task-badge ${taskClass[t] || ''}">${t}</span>`).join("");
+      const stageIdx = (d.pipelineStage || 1) - 1;
+      const stageBadge = `<span class="stage-badge stage-${d.pipelineStage}">${stageNums[stageIdx]} ${d.pipelineStageLabel || ""}</span>`;
+      const relevancyBadge = d.contextRelevancy
+        ? `<div><span class="relevancy-badge relevancy-${d.contextRelevancy}">${d.contextRelevancy}</span></div>` : "";
+      const relevancyNote = d.contextRelevancyNote
+        ? `<div class="relevancy-note">${d.contextRelevancyNote}</div>` : "";
+
       html += `<tr>
         <td><span class="rank-num">${d.rank}</span></td>
         <td><span class="tier tier-${d.tier}">T${d.tier}</span></td>
@@ -314,11 +569,14 @@
           <a class="hf-link" href="${hfUrl}" target="_blank">🤗 ${d.hf}</a>
         </td>
         <td><span class="domain-badge ${domainClass[d.domain]}">${d.domain}</span><br><span style="font-size:11px;color:#888">${d.subdomain}</span></td>
+        <td>${stageBadge}</td>
         <td><span class="usage-badge ${usageClass[d.usage]}">${d.usage}</span></td>
         <td style="max-width:160px"><div class="task-badges">${taskBadges}</div>${d.taskNote ? `<div class="task-note">${d.taskNote}</div>` : ""}</td>
-        <td style="font-size:12px;max-width:160px">${d.size}</td>
+        <td class="ctx-tokens">${fmtTokens(d.avgContextTokens)}</td>
+        <td class="relevancy-cell">${relevancyBadge}${relevancyNote}</td>
+        <td style="font-size:12px;max-width:140px">${d.size}</td>
         <td class="baseline-cell">${d.bestBaseline}</td>
-        <td style="font-size:12px;max-width:160px">${d.loraArtifacts}</td>
+        <td style="font-size:12px;max-width:140px">${d.loraArtifacts}</td>
         <td style="font-size:12px;white-space:nowrap">${d.license}</td>
         <td class="reason-cell">${d.rankReason}</td>
         <td class="notes-cell">${d.notes}</td>
@@ -329,9 +587,20 @@
   }
 
   // Filters
-  document.getElementById("filterDomain").addEventListener("change", render);
+  document.getElementById("filterDomain").addEventListener("change", () => {
+    activeDiagramStage = "";
+    activeStageFilter = "";
+    buildPipelineDiagrams();
+    render();
+  });
   document.getElementById("filterTier").addEventListener("change", render);
   document.getElementById("filterTask").addEventListener("change", render);
+  document.getElementById("filterStage").addEventListener("change", e => {
+    activeDiagramStage = "";
+    activeStageFilter = e.target.value;
+    buildPipelineDiagrams();
+    render();
+  });
 
   document.querySelectorAll(".toggle-group button").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -348,17 +617,18 @@
       const col = th.dataset.col;
       if (sortCol === col) {
         sortDir *= -1;
-        th.className = sortDir === 1 ? "sorted-asc" : "sorted-desc";
+        th.className = (th.className.replace(/ sorted-(asc|desc)/g,"")) + (sortDir === 1 ? " sorted-asc" : " sorted-desc");
       } else {
-        document.querySelectorAll("thead th").forEach(t => t.className = "");
+        document.querySelectorAll("thead th").forEach(t => t.className = t.className.replace(/ sorted-(asc|desc)/g,""));
         sortCol = col;
         sortDir = 1;
-        th.className = "sorted-asc";
+        th.className += " sorted-asc";
       }
       render();
     });
   });
 
+  buildPipelineDiagrams();
   render();
 </script>
 </body>
