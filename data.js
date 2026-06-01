@@ -112,6 +112,30 @@ window.CATALOG = [
     contextRelevancyNote: "Single-table schema is small but still required for column name resolution."
   },
   {
+    id: "spider-realistic",
+    name: "Spider-Realistic",
+    hf: "aherntech/spider-realistic",
+    domain: "NL→SQL",
+    subdomain: "Robustness Eval",
+    usage: "eval",
+    license: "CC BY 4.0",
+    size: "~508 examples / adversarially rewritten from Spider dev",
+    bestBaseline: "Most models drop 5–15% EX vs. Spider dev (no published LoRA)",
+    loraArtifacts: "None — eval only",
+    tier: 2,
+    rank: 6,
+    rankReason: "Only public HF robustness eval for SQL; reveals real-world phrasing sensitivity of Spider-trained adapters",
+    taskCategories: ["Generation", "Reasoning"],
+    taskNote: "Questions are adversarially rephrased to avoid lexical overlap with training data — tests generalization, not memorization.",
+    notes: "Too small for training (<1K). Use as a diagnostic: if Spider-trained adapter drops >10% EX here, it is overfitting to phrasing patterns.",
+    composability: "Stage 4 eval — run after Spider/BIRD generation adapter to measure robustness",
+    pipelineStage: 4,
+    pipelineStageLabel: "Robustness Eval",
+    avgContextTokens: 325,
+    contextRelevancy: "High",
+    contextRelevancyNote: "Same schema-dependency as Spider; schema is still required for correct SQL generation."
+  },
+  {
     id: "bird-critic",
     name: "BIRD-CRITIC",
     hf: "birdsql/bird-critic-1.0-open",
@@ -306,6 +330,31 @@ window.CATALOG = [
     avgContextTokens: 400,
     contextRelevancy: "Medium",
     contextRelevancyNote: "CVE description provides context but CWE patterns are partly parametric — model can learn taxonomy from description text alone."
+  },
+
+  {
+    id: "mitre-cti-ttp",
+    name: "MITRE ATT&CK CTI TTP v16",
+    hf: "sarahwei/cyber_MITRE_technique_CTI_dataset_v16",
+    domain: "Vulnerability",
+    subdomain: "TTP Mapping",
+    usage: "training",
+    license: "Apache 2.0",
+    size: "14,008 examples / 552 ATT&CK techniques / Enterprise v16",
+    bestBaseline: "No published LoRA — open opportunity",
+    loraArtifacts: "None published yet",
+    tier: 1,
+    rank: 8,
+    rankReason: "Only Apache 2.0 TTP mapping dataset on HF with full ATT&CK v16 coverage; no LoRA published = first-mover advantage",
+    taskCategories: ["Understanding", "Knowledge"],
+    taskNote: "Model maps a CTI procedure sentence to a MITRE ATT&CK technique ID — requires knowledge of the ATT&CK taxonomy and understanding of threat actor behavior.",
+    notes: "Sourced directly from MITRE ATT&CK Enterprise v16 procedural descriptions. ~25 examples/class average; imbalanced distribution. Apache 2.0 license. No published LoRA adapter — significant opportunity.",
+    composability: "Stage 4 — maps detected vulnerabilities / threat reports to ATT&CK techniques for prioritized response",
+    pipelineStage: 4,
+    pipelineStageLabel: "TTP Mapping",
+    avgContextTokens: 80,
+    contextRelevancy: "Low",
+    contextRelevancyNote: "The procedure sentence itself is the input — no external schema or context required; purely parametric knowledge task."
   },
 
   // ── Agentic ────────────────────────────────────────────────────────────────
