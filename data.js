@@ -111,7 +111,7 @@ window.CATALOG = [
   {
     id: "devign",
     name: "Devign",
-    hf: "claudios/Devign",
+    hf: "DetectVul/devign",
     domain: "Vulnerability",
     subdomain: "Detection",
     usage: "both",
@@ -149,7 +149,7 @@ window.CATALOG = [
   {
     id: "cvefixes",
     name: "CVEfixes",
-    hf: "euisuh15/cvefixes",
+    hf: "DetectVul/CVEFixes",
     domain: "Vulnerability",
     subdomain: "Patch Generation",
     usage: "both",
@@ -168,7 +168,7 @@ window.CATALOG = [
   {
     id: "crossvul",
     name: "CrossVul",
-    hf: "bstee615/CrossVul",
+    hf: "hitoshura25/crossvul",
     domain: "Vulnerability",
     subdomain: "Detection",
     usage: "training",
