@@ -261,7 +261,7 @@ window.CATALOG = [
   {
     id: "primevul",
     name: "PrimeVul",
-    hf: "starsofchance/PrimeVul",
+    hf: "colin/PrimeVul",
     domain: "Vulnerability",
     subdomain: "Detection",
     usage: "eval",
