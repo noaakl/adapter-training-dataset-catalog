@@ -38,7 +38,8 @@ window.CATALOG = [
     pipelineStageLabel: "Answerability Triage",
     avgContextTokens: 150,
     contextRelevancy: "High",
-    contextRelevancyNote: "The schema and question together determine answerability — both are required inputs."
+    contextRelevancyNote: "The schema and question together determine answerability — both are required inputs.",
+    trainableTasks: ["SQL Answerability Triage", "Unanswerable Question Detection"]
   },
   {
     id: "gretelai-synthetic-sql",
@@ -62,7 +63,8 @@ window.CATALOG = [
     pipelineStageLabel: "Generation",
     avgContextTokens: 500,
     contextRelevancy: "High",
-    contextRelevancyNote: "Schema context is required to generate syntactically valid SQL across 100 verticals."
+    contextRelevancyNote: "Schema context is required to generate syntactically valid SQL across 100 verticals.",
+    trainableTasks: ["Text-to-SQL Generation", "Instruction-Tuned SQL"]
   },
   {
     id: "spider",
@@ -86,7 +88,8 @@ window.CATALOG = [
     pipelineStageLabel: "Generation",
     avgContextTokens: 325,
     contextRelevancy: "High",
-    contextRelevancyNote: "Database schema is mandatory — without table/column names, cross-domain SQL is impossible."
+    contextRelevancyNote: "Database schema is mandatory — without table/column names, cross-domain SQL is impossible.",
+    trainableTasks: ["Text-to-SQL Generation", "Cross-Domain SQL", "Schema Linking"]
   },
   {
     id: "bird-sql",
@@ -110,7 +113,8 @@ window.CATALOG = [
     pipelineStageLabel: "Generation",
     avgContextTokens: 3000,
     contextRelevancy: "High",
-    contextRelevancyNote: "Large real-world DBs (avg 80 columns) require schema-linking; context is the primary constraint."
+    contextRelevancyNote: "Large real-world DBs (avg 80 columns) require schema-linking; context is the primary constraint.",
+    trainableTasks: ["Text-to-SQL Generation", "Production-Grade SQL", "Schema Linking", "Evidence-Based SQL"]
   },
   {
     id: "wikisql",
@@ -134,7 +138,8 @@ window.CATALOG = [
     pipelineStageLabel: "Generation",
     avgContextTokens: 100,
     contextRelevancy: "High",
-    contextRelevancyNote: "Single-table schema is small but still required for column name resolution."
+    contextRelevancyNote: "Single-table schema is small but still required for column name resolution.",
+    trainableTasks: ["Text-to-SQL Generation (warm-up)", "Simple SQL Formatting"]
   },
   {
     id: "spider-realistic",
@@ -158,7 +163,8 @@ window.CATALOG = [
     pipelineStageLabel: "Robustness Eval",
     avgContextTokens: 325,
     contextRelevancy: "High",
-    contextRelevancyNote: "Same schema-dependency as Spider; schema is still required for correct SQL generation."
+    contextRelevancyNote: "Same schema-dependency as Spider; schema is still required for correct SQL generation.",
+    trainableTasks: ["SQL Robustness Eval (adversarial rephrasing)"]
   },
   {
     id: "spider-syn",
@@ -182,7 +188,8 @@ window.CATALOG = [
     pipelineStageLabel: "Robustness Eval",
     avgContextTokens: 325,
     contextRelevancy: "High",
-    contextRelevancyNote: "Schema is still required; synonym substitution tests semantic generalization, not context-independence."
+    contextRelevancyNote: "Schema is still required; synonym substitution tests semantic generalization, not context-independence.",
+    trainableTasks: ["SQL Robustness Eval (synonym substitution)"]
   },
   {
     id: "bird-critic",
@@ -206,7 +213,8 @@ window.CATALOG = [
     pipelineStageLabel: "SQL Repair",
     avgContextTokens: 600,
     contextRelevancy: "High",
-    contextRelevancyNote: "Wrong SQL + execution error message + schema are all required to generate a valid repair."
+    contextRelevancyNote: "Wrong SQL + execution error message + schema are all required to generate a valid repair.",
+    trainableTasks: ["SQL Repair / Critique", "Error-Guided SQL Revision"]
   },
 
   // ── Vulnerability ──────────────────────────────────────────────────────────
@@ -233,7 +241,8 @@ window.CATALOG = [
     pipelineStageLabel: "Detection",
     avgContextTokens: 180,
     contextRelevancy: "High",
-    contextRelevancyNote: "The C/C++ function body IS the task — vulnerability patterns are localized to the code snippet."
+    contextRelevancyNote: "The C/C++ function body IS the task — vulnerability patterns are localized to the code snippet.",
+    trainableTasks: ["Vulnerability Detection", "Vulnerable-Line Localization", "CWE Classification (code)"]
   },
   {
     id: "primevul",
@@ -257,7 +266,8 @@ window.CATALOG = [
     pipelineStageLabel: "Detection",
     avgContextTokens: 450,
     contextRelevancy: "High",
-    contextRelevancyNote: "Deduplicated real-world CVE functions; vulnerability patterns require precise code reading."
+    contextRelevancyNote: "Deduplicated real-world CVE functions; vulnerability patterns require precise code reading.",
+    trainableTasks: ["Vulnerability Detection (eval)", "CWE Classification (code)"]
   },
   {
     id: "diversevul",
@@ -281,7 +291,8 @@ window.CATALOG = [
     pipelineStageLabel: "Detection",
     avgContextTokens: 200,
     contextRelevancy: "High",
-    contextRelevancyNote: "Function body IS the task — multi-language vulnerability patterns require reading the full code snippet."
+    contextRelevancyNote: "Function body IS the task — multi-language vulnerability patterns require reading the full code snippet.",
+    trainableTasks: ["Vulnerability Detection (multi-language)", "CWE Classification (code)"]
   },
   {
     id: "cvefixes",
@@ -305,7 +316,8 @@ window.CATALOG = [
     pipelineStageLabel: "Patch Generation",
     avgContextTokens: 300,
     contextRelevancy: "High",
-    contextRelevancyNote: "The vulnerable function is the only source of information for generating a correct fix."
+    contextRelevancyNote: "The vulnerable function is the only source of information for generating a correct fix.",
+    trainableTasks: ["Security-Fix Commit Classification", "Patch Generation", "CVE→CWE Classification (text)", "CVE Severity Triage", "Fix Verification"]
   },
   {
     id: "circl-vuln-cwe",
@@ -329,7 +341,8 @@ window.CATALOG = [
     pipelineStageLabel: "CWE Classification",
     avgContextTokens: 400,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "CVE description provides context but CWE patterns are partly parametric — model can learn taxonomy from description text alone."
+    contextRelevancyNote: "CVE description provides context but CWE patterns are partly parametric — model can learn taxonomy from description text alone.",
+    trainableTasks: ["CWE Classification (text)", "CVE→CWE Mapping"]
   },
 
   {
@@ -354,7 +367,8 @@ window.CATALOG = [
     pipelineStageLabel: "TTP Mapping",
     avgContextTokens: 80,
     contextRelevancy: "Low",
-    contextRelevancyNote: "The procedure sentence itself is the input — no external schema or context required; purely parametric knowledge task."
+    contextRelevancyNote: "The procedure sentence itself is the input — no external schema or context required; purely parametric knowledge task.",
+    trainableTasks: ["CTI→MITRE Technique Mapping", "CTI→MITRE Tactic Classification", "TTP Evidence-Span Extraction", "TTP Procedure Mapping"]
   },
 
   // ── Agentic ────────────────────────────────────────────────────────────────
@@ -381,7 +395,8 @@ window.CATALOG = [
     pipelineStageLabel: "Intent Classification",
     avgContextTokens: 200,
     contextRelevancy: "Low",
-    contextRelevancyNote: "The decision to call a tool is primarily driven by the user's NL request, not external context."
+    contextRelevancyNote: "The decision to call a tool is primarily driven by the user's NL request, not external context.",
+    trainableTasks: ["Tool-Use Intent Classification", "Tool Hallucination Reduction"]
   },
   {
     id: "xlam-60k",
@@ -405,7 +420,8 @@ window.CATALOG = [
     pipelineStageLabel: "Function Calling",
     avgContextTokens: 414,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "API specs help disambiguate function signatures, but many tool calls are inferable from NL alone."
+    contextRelevancyNote: "API specs help disambiguate function signatures, but many tool calls are inferable from NL alone.",
+    trainableTasks: ["Function Calling (single-turn)", "Tool Selection", "Argument Extraction"]
   },
   {
     id: "glaive-fc-v2",
@@ -429,7 +445,8 @@ window.CATALOG = [
     pipelineStageLabel: "Function Calling",
     avgContextTokens: 512,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "Multi-turn context matters for state tracking, but function specs are often redundant with the NL description."
+    contextRelevancyNote: "Multi-turn context matters for state tracking, but function specs are often redundant with the NL description.",
+    trainableTasks: ["Function Calling (multi-turn)", "Tool Selection", "Conversation-State Tracking"]
   },
   {
     id: "toolmind",
@@ -453,7 +470,8 @@ window.CATALOG = [
     pipelineStageLabel: "Function Calling",
     avgContextTokens: 500,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "Aggregated across 7 source datasets; API specs are helpful but intent is often expressed in NL."
+    contextRelevancyNote: "Aggregated across 7 source datasets; API specs are helpful but intent is often expressed in NL.",
+    trainableTasks: ["Function Calling (broad coverage)", "Multi-step Tool Planning", "Tool Selection", "Argument Extraction"]
   },
   {
     id: "toolace",
@@ -477,7 +495,8 @@ window.CATALOG = [
     pipelineStageLabel: "Function Calling",
     avgContextTokens: 400,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "26.5K API pool requires specs for correct parameter typing, but coarse intent is NL-inferable."
+    contextRelevancyNote: "26.5K API pool requires specs for correct parameter typing, but coarse intent is NL-inferable.",
+    trainableTasks: ["Function Calling (single-turn)", "Tool Selection", "Argument Extraction"]
   },
   {
     id: "apigen-mt-5k",
@@ -501,7 +520,8 @@ window.CATALOG = [
     pipelineStageLabel: "Multi-turn Planning",
     avgContextTokens: 800,
     contextRelevancy: "High",
-    contextRelevancyNote: "Multi-turn trajectories require tracking prior tool outputs as context for each subsequent call."
+    contextRelevancyNote: "Multi-turn trajectories require tracking prior tool outputs as context for each subsequent call.",
+    trainableTasks: ["Multi-turn Function Calling", "Tool-State Tracking", "Agentic Planning"]
   },
   {
     id: "bfcl",
@@ -525,7 +545,8 @@ window.CATALOG = [
     pipelineStageLabel: "Benchmark Eval",
     avgContextTokens: 6218,
     contextRelevancy: "Medium",
-    contextRelevancyNote: "37-tool toolsets provide context that reduces ambiguity, but eval measures generalization beyond specs."
+    contextRelevancyNote: "37-tool toolsets provide context that reduces ambiguity, but eval measures generalization beyond specs.",
+    trainableTasks: ["Function Calling Eval (do not train)"]
   },
   {
     id: "agent-instruct",
@@ -549,7 +570,8 @@ window.CATALOG = [
     pipelineStageLabel: "Trajectory Decomposition",
     avgContextTokens: 1200,
     contextRelevancy: "High",
-    contextRelevancyNote: "Full trajectory history (prior observations + tool results) is required to determine the next action."
+    contextRelevancyNote: "Full trajectory history (prior observations + tool results) is required to determine the next action.",
+    trainableTasks: ["Trajectory Decomposition", "Long-Horizon Planning", "Multi-Environment Agentic Skills"]
   },
 
   // ── LLM Safety ─────────────────────────────────────────────────────────────
@@ -576,6 +598,7 @@ window.CATALOG = [
     pipelineStageLabel: "Prompt Guardrail",
     avgContextTokens: 150,
     contextRelevancy: "High",
-    contextRelevancyNote: "The full prompt text is the only signal — adversarial intent is encoded in phrasing, persona framing, and encoding tricks."
+    contextRelevancyNote: "The full prompt text is the only signal — adversarial intent is encoded in phrasing, persona framing, and encoding tricks.",
+    trainableTasks: ["Jailbreak / Prompt-Injection Detection", "Adversarial Prompt Classification", "Safety Guardrail"]
   }
 ];
