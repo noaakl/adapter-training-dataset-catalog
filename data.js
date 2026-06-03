@@ -11,6 +11,7 @@
 //   NL→SQL:      1-Triage  →  2-Generation  →  3-Repair   →  4-Robustness Eval
 //   Vulnerability: 1-Detection  →  2-CWE Classification  →  3-Patch Gen  →  4-TTP Mapping
 //   Agentic:     1-Intent  →  2-Function Call  →  3-Multi-turn  →  4-Trajectory
+//   LLM Safety:  1-Prompt Guardrail  →  2-Content Classification  →  3-Output Verification  →  4-Supply Chain
 window.CATALOG = [
 
   // ── NL→SQL ─────────────────────────────────────────────────────────────────
@@ -235,30 +236,6 @@ window.CATALOG = [
     contextRelevancyNote: "The C/C++ function body IS the task — vulnerability patterns are localized to the code snippet."
   },
   {
-    id: "devign",
-    name: "Devign",
-    hf: "DetectVul/devign",
-    domain: "Vulnerability",
-    subdomain: "Detection",
-    usage: "both",
-    license: "MIT",
-    size: "27.3k C functions (FFmpeg + QEMU)",
-    bestBaseline: "DFEPT+CodeT5 F1 61.22%; LineVul cleaned F1 0.87",
-    loraArtifacts: "claudios/Devign checkpoint on HF",
-    tier: 1,
-    rank: 2,
-    rankReason: "MIT license; published checkpoint; clean binary detection",
-    taskCategories: ["Understanding"],
-    taskNote: "Binary classification of C functions. Teaches the model to distinguish vulnerable from benign code patterns.",
-    notes: "Clean binary detection dataset. MIT license makes it safe for publication. Limited to C/C++ (FFmpeg + QEMU). Use as complement to BigVul.",
-    composability: "Good binary detection stage",
-    pipelineStage: 1,
-    pipelineStageLabel: "Detection",
-    avgContextTokens: 200,
-    contextRelevancy: "High",
-    contextRelevancyNote: "Binary classification requires reading the full function; no answer is possible without the code."
-  },
-  {
     id: "primevul",
     name: "PrimeVul",
     hf: "colin/PrimeVul",
@@ -281,6 +258,30 @@ window.CATALOG = [
     avgContextTokens: 450,
     contextRelevancy: "High",
     contextRelevancyNote: "Deduplicated real-world CVE functions; vulnerability patterns require precise code reading."
+  },
+  {
+    id: "diversevul",
+    name: "DiverseVul",
+    hf: "bstee615/diversevul",
+    domain: "Vulnerability",
+    subdomain: "Detection",
+    usage: "both",
+    license: "Research use (per-repo; verify before commercial use)",
+    size: "~330k functions / 150+ CWEs / 18 languages / deduplicated",
+    bestBaseline: "DiverseVul paper: CodeBERT 30.0% F1 / BigVul-only CodeBERT 28.4% F1 → larger + multi-language training improves detection",
+    loraArtifacts: "Llama 3.2 community LoRAs on HF; RAID 2023 paper FFT baseline",
+    tier: 1,
+    rank: 2,
+    rankReason: "Largest deduplicated multi-language detection corpus; supersedes Devign/CrossVul/ReVeal per BARHA unified catalog; community LoRAs exist",
+    taskCategories: ["Understanding"],
+    taskNote: "Binary vulnerability detection across 18 languages. Broader language coverage than BigVul (C/C++ only); deduplicated to reduce label noise.",
+    notes: "Canonical large-scale detection dataset per BARHA security adapter catalog. 330K functions across 18 languages, deduplicated. Replaces Devign, CrossVul, ReVeal which have label-noise issues. RAID 2023.",
+    composability: "Stage 1 — primary training corpus for detection adapter; pair with PrimeVul for clean held-out eval",
+    pipelineStage: 1,
+    pipelineStageLabel: "Detection",
+    avgContextTokens: 200,
+    contextRelevancy: "High",
+    contextRelevancyNote: "Function body IS the task — multi-language vulnerability patterns require reading the full code snippet."
   },
   {
     id: "cvefixes",
@@ -306,55 +307,6 @@ window.CATALOG = [
     contextRelevancy: "High",
     contextRelevancyNote: "The vulnerable function is the only source of information for generating a correct fix."
   },
-  {
-    id: "crossvul",
-    name: "CrossVul",
-    hf: "hitoshura25/crossvul",
-    domain: "Vulnerability",
-    subdomain: "Detection",
-    usage: "training",
-    license: "Apache 2.0",
-    size: "~27k vulnerable functions / multi-language",
-    bestBaseline: "Aggregated into Previous+DiverseVul baselines",
-    loraArtifacts: "Few",
-    tier: 2,
-    rank: 5,
-    rankReason: "Multi-language augmentation; use to supplement BigVul",
-    taskCategories: ["Understanding"],
-    taskNote: "Multi-language binary detection. Teaches language-agnostic vulnerability patterns (C, Python, Java, etc.).",
-    notes: "Multi-language supplement to BigVul. No standalone benchmark — use as data augmentation only.",
-    composability: "Augmentation layer",
-    pipelineStage: 1,
-    pipelineStageLabel: "Detection",
-    avgContextTokens: 200,
-    contextRelevancy: "High",
-    contextRelevancyNote: "Multi-language vulnerability detection; code context is essential regardless of language."
-  },
-  {
-    id: "reveal",
-    name: "ReVeal",
-    hf: "claudios/ReVeal",
-    domain: "Vulnerability",
-    subdomain: "Detection",
-    usage: "both",
-    license: "Unconfirmed (unofficial HF mirror; no LICENSE on card — verify before commercial use)",
-    size: "~18.2k functions / ~9:1 benign imbalance",
-    bestBaseline: "ExplainVulD F1 48.23% / Acc 88.25%",
-    loraArtifacts: "Few",
-    tier: 2,
-    rank: 6,
-    rankReason: "Tests realistic class imbalance; supplement use",
-    taskCategories: ["Understanding"],
-    taskNote: "Binary detection under realistic class imbalance (~9:1). Tests whether the model has learned vulnerability understanding vs. majority-class bias.",
-    notes: "Tests robustness to real-world class imbalance (~9:1 benign). Use to validate that the adapter doesn't overfit to balanced training data.",
-    composability: "Imbalance robustness test",
-    pipelineStage: 1,
-    pipelineStageLabel: "Detection",
-    avgContextTokens: 200,
-    contextRelevancy: "High",
-    contextRelevancyNote: "9:1 imbalanced binary detection; the function body is the only signal available."
-  },
-
   {
     id: "circl-vuln-cwe",
     name: "CIRCL Vulnerability CWE Patch",
@@ -598,5 +550,32 @@ window.CATALOG = [
     avgContextTokens: 1200,
     contextRelevancy: "High",
     contextRelevancyNote: "Full trajectory history (prior observations + tool results) is required to determine the next action."
+  },
+
+  // ── LLM Safety ─────────────────────────────────────────────────────────────
+
+  {
+    id: "wildjailbreak",
+    name: "WildJailbreak",
+    hf: "allenai/wildjailbreak",
+    domain: "LLM Safety",
+    subdomain: "Jailbreak Detection",
+    usage: "both",
+    license: "ODC-BY",
+    size: "262k examples (vanilla + adversarial × harmful + benign; 4-cell design)",
+    bestBaseline: "WildGuard (AllenAI) 97.7% jailbreak-detection F1 on WildJailbreak eval; GPT-4 93.8% F1",
+    loraArtifacts: "allenai/wildguard (full fine-tune, LoRA-portable); community classifiers on HF",
+    tier: 1,
+    rank: 1,
+    rankReason: "Primary dataset for jailbreak/prompt-injection guardrail per BARHA task-12; 262K 4-cell design trains low false-positive rate on benign-edgy inputs; ODC-BY license",
+    taskCategories: ["Understanding"],
+    taskNote: "Binary classifier: is this prompt a jailbreak/injection attempt? The 4-cell design (vanilla/adversarial × harmful/benign) is critical — training on all 4 cells prevents over-refusing benign-edgy prompts.",
+    notes: "Primary dataset for aLoRA jailbreak guardrail (BARHA task-12). 4-cell design enables a low false-positive rate on benign-but-edgy inputs, which is the key failure mode of simpler approaches. AllenAI WildGuard model trained on this achieves 97.7% F1.",
+    composability: "Stage 1 — input-side guardrail; runs against every inbound prompt in parallel with other safety adapters (toxicity, PII, topic-drift)",
+    pipelineStage: 1,
+    pipelineStageLabel: "Prompt Guardrail",
+    avgContextTokens: 150,
+    contextRelevancy: "High",
+    contextRelevancyNote: "The full prompt text is the only signal — adversarial intent is encoded in phrasing, persona framing, and encoding tricks."
   }
 ];
