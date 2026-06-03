@@ -197,6 +197,8 @@
   .domain-sql     { background: #dbeafe; color: #1e40af; }
   .domain-vuln    { background: #fce7f3; color: #9d174d; }
   .domain-agentic { background: #ede9fe; color: #5b21b6; }
+  .domain-safety  { background: #dcfce7; color: #166534; }
+  .trainable-task-badge { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 3px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; margin: 1px; white-space: nowrap; }
 
   .usage-badge {
     display: inline-block;
@@ -314,6 +316,7 @@
       <option value="NL→SQL">NL→SQL</option>
       <option value="Vulnerability">Vulnerability</option>
       <option value="Agentic">Agentic</option>
+      <option value="LLM Safety">LLM Safety</option>
     </select>
   </div>
   <div>
@@ -366,6 +369,7 @@
       <th data-col="pipelineStage">Stage</th>
       <th data-col="usage">Usage</th>
       <th data-col="taskCategories">Task Categories</th>
+      <th data-col="trainableTasks">Trainable Tasks</th>
       <th data-col="avgContextTokens">Avg Context</th>
       <th data-col="contextRelevancy">Context Relevancy</th>
       <th data-col="size">Size</th>
@@ -387,7 +391,7 @@
   let activeStageFilter = "";  // from dropdown
   let activeDiagramStage = ""; // from pipeline diagram click (domain:stage)
 
-  const domainClass = { "NL→SQL": "domain-sql", "Vulnerability": "domain-vuln", "Agentic": "domain-agentic" };
+  const domainClass = { "NL→SQL": "domain-sql", "Vulnerability": "domain-vuln", "Agentic": "domain-agentic", "LLM Safety": "domain-safety" };
   const usageClass  = { training: "usage-training", eval: "usage-eval", both: "usage-both" };
   const taskClass   = { Generation: "task-generation", Reasoning: "task-reasoning", Understanding: "task-understanding", Knowledge: "task-knowledge" };
   const stageNums   = ["①","②","③","④"];
@@ -464,7 +468,7 @@
   function buildPipelineDiagrams() {
     const section = document.getElementById("pipelineSection");
     const activeDomain = document.getElementById("filterDomain").value;
-    const domains = activeDomain ? [activeDomain] : ["NL→SQL", "Vulnerability", "Agentic"];
+    const domains = activeDomain ? [activeDomain] : ["NL→SQL", "Vulnerability", "Agentic", "LLM Safety"];
     section.innerHTML = "";
 
     domains.forEach(domain => {
@@ -544,7 +548,7 @@
     document.getElementById("countLabel").textContent = rows.length + " dataset" + (rows.length !== 1 ? "s" : "");
 
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="15" class="no-results">No datasets match the current filters.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="16" class="no-results">No datasets match the current filters.</td></tr>';
       return;
     }
 
@@ -555,7 +559,7 @@
     rows.forEach(d => {
       if (!showingSingleDomain && d.domain !== lastDomain) {
         lastDomain = d.domain;
-        html += `<tr><td colspan="15" class="domain-section">${d.domain}</td></tr>`;
+        html += `<tr><td colspan="16" class="domain-section">${d.domain}</td></tr>`;
       }
       const hfUrl = `https://huggingface.co/datasets/${d.hf}`;
       const taskBadges = (d.taskCategories || [])
@@ -578,6 +582,7 @@
         <td>${stageBadge}</td>
         <td><span class="usage-badge ${usageClass[d.usage]}">${d.usage}</span></td>
         <td style="max-width:160px"><div class="task-badges">${taskBadges}</div>${d.taskNote ? `<div class="task-note">${d.taskNote}</div>` : ""}</td>
+        <td style="max-width:180px"><div class="task-badges">${(d.trainableTasks||[]).map(t=>`<span class="trainable-task-badge">${t}</span>`).join("")}</div></td>
         <td class="ctx-tokens">${fmtTokens(d.avgContextTokens)}</td>
         <td class="relevancy-cell">${relevancyBadge}${relevancyNote}</td>
         <td style="font-size:12px;max-width:140px">${d.size}</td>
